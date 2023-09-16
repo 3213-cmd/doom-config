@@ -1,0 +1,4 @@
+# -*- mode: snippet -*-
+# name: org_image_width
+# --
+#+attr_org: :width ${1:`(read-string "Enter width: ")`}

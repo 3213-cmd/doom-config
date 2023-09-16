@@ -1,0 +1,4 @@
+# -*- mode: snippet -*-
+# name: dailies_timestamp
+# --
+ `(format-time-string "%H:%M")`$0
