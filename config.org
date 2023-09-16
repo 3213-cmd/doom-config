@@ -65,61 +65,20 @@
 This is my personal Doom Emacs config. When I tried out Emacs for the first time in 2022, I fell in love with its extensibility and efficiency. After spending alot of time tinkering with it, I realized that my config was getting hard to manage and thinking of sensible keybindings for all packages is not an easy task to handle. Doom Emacs took alot of the work from my shoulders and introduced me to many great new packages.
 
 I mainly host it on GitHub to have yet another backup of it and to have a place to easily access it if I need to.
-* Rainbow Mode
-
+* Blamer
 #+BEGIN_SRC emacs-lisp :tangle yes
-(add-hook! org-mode 'rainbow-mode)
-(add-hook! prog-mode 'rainbow-mode)
+;; By setting an attribute to unspecefied, I can inherit it. Otherwise only unspecified attributes will be overwritten. Could be useful in the future
+(after! blamer
+  (set-face-attribute 'blamer-face nil :foreground 'unspecified :inherit 'lsp-face-semhl-variable)
+  (setq blamer-idle-time 0.3)
+  (setq blamer-min-offset 70)
+  (setq blamer-show-avatar-p nil)
+  (setq blamer-max-commit-message-length 50))
 
-#+END_SRC
-* EMMS (Emacs Multimedia System)
 
-#+BEGIN_SRC emacs-lisp :tangle yes
 (map! :leader
-      (:prefix ("e" . "emms")
-       :desc "create new playlist" "n" #'emms-metaplaylist-mode-new-buffer
-       :desc "kill current playlist and switch to next one"     "k" #'emms-playlist-current-kill
-       :desc "set current playlist as active"         "b" #'emms
-       :desc "mode to the current playlist"     "m" #'emms-metaplaylist-mode-go
-       :desc "pop up current playlist"  "r" #'emms-playlist-mode-go-popup))
-
-(after! emms
-  (setq emms-browser-covers 'emms-browser-cache-thumbnail-async
-        emms-browser-thumbnail-large-size 512)
-  (add-hook 'emms-browser-mode-hook #'emms-browser-display-playlist))
-
-(add-to-list 'display-buffer-alist
-             '((lambda (buffer _)
-                 (with-current-buffer buffer
-                   (seq-some (lambda (mode) (derived-mode-p mode)) '(emms-playlist-mode))))
-               (display-buffer-reuse-window display-buffer-below-selected)
-               (reusable-frames . visible) (window-height . 0.20)))
-
-#+END_SRC
-* Clipboard
-#+BEGIN_SRC emacs-lisp :tangle yes
-(map! :leader
-      (:prefix ("k" . "kill-clip")
-       :desc "select from clipboard" "V" #'cliphist-paste-item
-       :desc "kill to clipboard"     "x" #'clipboard-kill-ring-save
-       :desc "select fromm kill ring"         "P" #'+default/yank-pop
-       :desc "paste from  to node"     "p" #'evil-paste-after
-       :desc "Toggle roam buffer"  "r" #'org-roam-buffer-toggle))
-
-(global-set-key (kbd "M-p") #'yank-from-kill-ring)
-#+END_SRC
-* Calendar
-#+BEGIN_SRC emacs-lisp :tangle yes
-(map! :leader
-      :desc "open calendar" "o c" #'cfw:open-org-calendar)
-#+END_SRC
-
-* Prog Mode
-* User
-Some functionality uses this to identify you, e.g. GPG configuration, email clients, file templates and snippets. It is optional.
-#+BEGIN_SRC emacs-lisp :tangle yes
-(setq user-full-name "John Doe"
-      user-mail-address "john@doe.com")
+      :desc "blamer show commit info" "c b" #'blamer-show-commit-info
+      :desc "toggle global blamer mode" "c B" #'global-blamer-mode)
 #+END_SRC
 * Buffers
 ** Buffer Skip
@@ -142,6 +101,34 @@ Some functionality uses this to identify you, e.g. GPG configuration, email clie
   (string-match-p aj8/buffer-skip-regexp (buffer-name buffer)))
 
 (setq switch-to-prev-buffer-skip 'aj8/buffer-skip-p)
+#+END_SRC
+* Calendar
+#+BEGIN_SRC emacs-lisp :tangle yes
+(map! :leader
+      :desc "open calendar" "o c" #'cfw:open-org-calendar)
+#+END_SRC
+
+* Clipboard
+#+BEGIN_SRC emacs-lisp :tangle yes
+(map! :leader
+      (:prefix ("k" . "kill-clip")
+       :desc "select from clipboard" "V" #'cliphist-paste-item
+       :desc "kill to clipboard"     "x" #'clipboard-kill-ring-save
+       :desc "select fromm kill ring"         "P" #'+default/yank-pop
+       :desc "paste from  to node"     "p" #'evil-paste-after
+       :desc "Toggle roam buffer"  "r" #'org-roam-buffer-toggle))
+
+(global-set-key (kbd "M-p") #'yank-from-kill-ring)
+#+END_SRC
+* Copilot
+#+BEGIN_SRC emacs-lisp :tangle yes
+;; (use-package! copilot
+;;   ;; :hook (prog-mode . copilot-mode)
+;;   :bind (:map copilot-completion-map
+;;               ("<tab>" . 'copilot-accept-completion)
+;;               ("TAB" . 'copilot-accept-completion)
+;;               ("C-TAB" . 'copilot-accept-completion-by-word)
+;;               ("C-<tab>" . 'copilot-accept-completion-by-word)))
 #+END_SRC
 * Display
 ** Line Numbers
@@ -174,29 +161,70 @@ See https://peps.python.org/pep-0350/
                                 ("???" warning bold)
                                 ("LEARN" warning bold))))
 #+END_SRC
-* Blamer
+* EMMS (Emacs Multimedia System)
+
 #+BEGIN_SRC emacs-lisp :tangle yes
-;; By setting an attribute to unspecefied, I can inherit it. Otherwise only unspecified attributes will be overwritten. Could be useful in the future
-(after! blamer
-  (set-face-attribute 'blamer-face nil :foreground 'unspecified :inherit 'lsp-face-semhl-variable)
-  (setq blamer-idle-time 0.3)
-  (setq blamer-min-offset 70)
-  (setq blamer-show-avatar-p nil)
-  (setq blamer-max-commit-message-length 50))
-
-
 (map! :leader
-      :desc "blamer show commit info" "c b" #'blamer-show-commit-info
-      :desc "toggle global blamer mode" "c B" #'global-blamer-mode)
+      (:prefix ("e" . "emms")
+       :desc "create new playlist" "n" #'emms-metaplaylist-mode-new-buffer
+       :desc "kill current playlist and switch to next one"     "k" #'emms-playlist-current-kill
+       :desc "set current playlist as active"         "b" #'emms
+       :desc "mode to the current playlist"     "m" #'emms-metaplaylist-mode-go
+       :desc "pop up current playlist"  "r" #'emms-playlist-mode-go-popup))
+
+(after! emms
+  (setq emms-browser-covers 'emms-browser-cache-thumbnail-async
+        emms-browser-thumbnail-large-size 512)
+  (add-hook 'emms-browser-mode-hook #'emms-browser-display-playlist))
+
+(add-to-list 'display-buffer-alist
+             '((lambda (buffer _)
+                 (with-current-buffer buffer
+                   (seq-some (lambda (mode) (derived-mode-p mode)) '(emms-playlist-mode))))
+               (display-buffer-reuse-window display-buffer-below-selected)
+               (reusable-frames . visible) (window-height . 0.20)))
+
 #+END_SRC
-* Vundo
+* Evil (Vim Keybindings)
+** Evil Ex commands
 #+BEGIN_SRC emacs-lisp :tangle yes
-(after! vundo
-  (setq vundo-glyph-alist vundo-unicode-symbols)
-  (set-face-attribute 'vundo-saved nil   :foreground 'unspecified :inherit 'diary)
-  (set-face-attribute 'vundo-last-saved nil   :foreground 'unspecified :background nil :inherit 'error)
-  (set-face-attribute 'vundo-default nil :family "Symbola"))
-#+END_SRC emacs-lisp
+(after! evil
+  (evil-ex-define-cmd "q" 'kill-this-buffer)
+  (evil-ex-define-cmd "wq" 'save-and-kill-this-buffer)
+  ;; Need to type out :quit to close emacs
+  (evil-ex-define-cmd "quit" 'kill-buffer-and-window))
+#+END_SRC
+** Window Map
+Pop up windos cycle next page etc. TODO
+
+#+BEGIN_SRC emacs-lisp :tangle yes
+(map!
+ :after evil
+ :map evil-window-map
+ "C-h" 'which-key-show-next-page-cycle)
+#+END_SRC
+
+** Undo
+Don't need Undo with undo-redo ...
+#+BEGIN_SRC emacs-lisp :tangle yes
+;; (setq undo-fu-session-global-mode nil)
+;; g u to lowercase, let's see if this works for me.
+(map! :after evil
+      :map evil-visual-state-map
+      "u" #'evil-undo)
+(after! evil
+  (setq evil-undo-system 'undo-redo
+        evil-undo-function 'undo-only
+        evil-redo-function 'undo-redo))
+
+#+END_SRC
+* File extension
+Example
+#+BEGIN_SRC emacs-lisp :tangle yes
+;; Associate file extension with a mode
+ (add-to-list 'auto-mode-alist '("\\.razor\\'" . web-mode))
+
+#+END_SRC
 * Font
 Doom exposes five (optional) variables for controlling fonts in Doom:
 - *doom-font*: the primary font to use
@@ -221,6 +249,16 @@ See *C-h v doom-font* for documentation and more examples of what they accept.
 
 If you or Emacs can't find your font, use *M-x describe-font* to look them up; *M-x eval-region* to execute elisp code, and *M-x doom/reload-font* to refresh your font settings. If Emacs still can't find your font, it likely wasn't installed correctly. Font issues are rarely Doom issues!
 
+* LSP
+Useful Keybindings are XYZ
+
+#+BEGIN_SRC emacs-lisp :tangle yes
+(after! lsp-ui
+  (setq lsp-ui-doc-enable t)
+  (setq lsp-ui-doc-show-with-mouse t)
+  (setq lsp-ui-doc-max-height 500)
+  (setq lsp-ui-doc-max-width 500))
+#+END_SRC
 * Magit
 Uses package xyz
 ** Magit Todos
@@ -254,6 +292,40 @@ Uses package xyz
 (after! magit
   (setq magit-log-section-commit-count 30))
 #+end_src
+* Modeline
+#+BEGIN_SRC emacs-lisp :tangle yes
+(setq doom-modeline-persp-name t )
+        (after! persp-mode
+          (setq persp-emacsclient-init-frame-behaviour-override "main"))
+
+#+END_SRC
+* Notes
+** Config
+Whenever you reconfigure a package, make sure to wrap your config in an *after*' block, otherwise Doom's defaults may override your settings. E.g.
+#+BEGIN_QUOTE
+  (after! PACKAGE
+    (setq x y))
+#+END_QUOTE
+The exceptions to this rule:
+  - Setting file/directory variables (like *org-directory*)
+  - Setting variables which explicitly tell you to set them before their
+    package is loaded (see *C-h v VARIABLE* to look up their documentation).
+  - Setting doom variables (which start with "*doom-* " or *+*).
+
+Here are some additional functions/macros that will help you configure Doom.
+
+- *load!* for loading external *.el files relative to this one
+- *use-package!* for configuring packages
+- *after!* for running code after a package has loaded
+- *add-load-path!* for adding directories to the *load-path*, relative to
+  this file. Emacs searches the *load-path* when you load packages with
+  *require* or *use-package*.
+- *map!* for binding new keys
+
+To get information about any of these functions/macros, move the cursor over the highlighted symbol at press /K/ (non-evil users must press /C-c c k/). This will open documentation for it, including demos of how they are used. Alternatively, use /C-h o/ to look up a symbol (functions, variables, faces, etc).
+
+You can also try *gd* (or /C-c c d/) to jump to their definition and see how
+they are implemented.
 * Org
 ** General
 #+BEGIN_SRC emacs-lisp :tangle yes
@@ -615,41 +687,13 @@ Uses package xyz
           org-roam-ui-open-on-start t))
 
 #+END_SRC
-* Projectile
+* PDF
 #+BEGIN_SRC emacs-lisp :tangle yes
-;; (setq projectile-ignored-projects '("/home/user/"))
-#+END_SRC
-* Modeline
-#+BEGIN_SRC emacs-lisp :tangle yes
-(setq doom-modeline-persp-name t )
-        (after! persp-mode
-          (setq persp-emacsclient-init-frame-behaviour-override "main"))
+(after! pdf-view
+  (setq pdf-view-resize-factor 1.05))
 
 #+END_SRC
-* File extension
-Example
-#+BEGIN_SRC emacs-lisp :tangle yes
-;; Associate file extension with a mode
- (add-to-list 'auto-mode-alist '("\\.razor\\'" . web-mode))
-
-#+END_SRC
-* Copilot
-#+BEGIN_SRC emacs-lisp :tangle yes
-;; (use-package! copilot
-;;   ;; :hook (prog-mode . copilot-mode)
-;;   :bind (:map copilot-completion-map
-;;               ("<tab>" . 'copilot-accept-completion)
-;;               ("TAB" . 'copilot-accept-completion)
-;;               ("C-TAB" . 'copilot-accept-completion-by-word)
-;;               ("C-<tab>" . 'copilot-accept-completion-by-word)))
-#+END_SRC
-* TreeSitter
-Check how native tree-sitter works
-#+BEGIN_SRC emacs-lisp :tangle yes
-(global-tree-sitter-mode)
-(add-hook 'tree-sitter-after-on-hook #'tree-sitter-hl-mode)
-
-#+END_SRC
+* Prog Mode
 * Programming
 ** Lispy
 #+BEGIN_SRC emacs-lisp :tangle yes
@@ -713,30 +757,21 @@ Check how native tree-sitter works
 (evil-set-initial-state 'rustic-popup-mode 'emacs)
 
 #+END_SRC
-* Theme
-There are two ways to load a theme. Both assume the theme is installed and available. You can either set *doom-theme* or manually load a theme with the *load-theme*  function.
-**   Theme
+* Projectile
 #+BEGIN_SRC emacs-lisp :tangle yes
-(setq doom-theme 'modus-vivendi)
+;; (setq projectile-ignored-projects '("/home/user/"))
 #+END_SRC
-**   Heaven and Hell
+* Rainbow Mode
+
 #+BEGIN_SRC emacs-lisp :tangle yes
+(add-hook! org-mode 'rainbow-mode)
+(add-hook! prog-mode 'rainbow-mode)
 
-(after! heaven-and-hell
-  (setq heaven-and-hell-themes
-        '((light . doom-gruvbox)
-          ;; (dark . doom-tokyo-night)
-          (dark . modus-vivendi)
-          ))
-  ;; Optionall, load themes without asking for confirmation.
-  (setq heaven-and-hell-load-theme-no-confirm t)
-  (map!
-   :g "<f6>" 'heaven-and-hell-toggle-theme
-   ;; Sometimes loading default theme is broken. I couldn't figured that out yet.
-   :leader "<f6>" 'heaven-and-hell-load-default-theme))
-
-(add-hook 'after-init-hook 'heaven-and-hell-init-hook)
-
+#+END_SRC
+* Ranger
+#+BEGIN_SRC emacs-lisp :tangle yes
+(after! ranger
+  (setq ranger-show-hidden 'format))
 #+END_SRC
 * SQLite
 
@@ -749,6 +784,14 @@ There are two ways to load a theme. Both assume the theme is installed and avail
  "t" #'sqlite-mode-list-tables
  "c" #'sqlite-mode-list-columns
  "D" #'sqlite-mode-delete)
+#+END_SRC
+* Tabs (Code) and Spaces
+#+BEGIN_SRC emacs-lisp :tangle yes
+;; (setq-default indent-tabs-mode nil)
+(setq backward-delete-char-untabify-method nil)
+(setq-default tab-width 4)
+(setq-default tab-stop-list (list 4 8 12))
+
 #+END_SRC
 * Tabs (Ui)
 ** Centaur Tabs
@@ -798,56 +841,29 @@ There are two ways to load a theme. Both assume the theme is installed and avail
   (centaur-tabs-change-fonts "Terminus" 50)
   (centaur-tabs-group-by-projectile-project))
 #+END_SRC
-* Tabs (Code) and Spaces
+* Theme
+There are two ways to load a theme. Both assume the theme is installed and available. You can either set *doom-theme* or manually load a theme with the *load-theme*  function.
+**   Theme
 #+BEGIN_SRC emacs-lisp :tangle yes
-;; (setq-default indent-tabs-mode nil)
-(setq backward-delete-char-untabify-method nil)
-(setq-default tab-width 4)
-(setq-default tab-stop-list (list 4 8 12))
+(setq doom-theme 'modus-vivendi)
+#+END_SRC
+**   Heaven and Hell
+#+BEGIN_SRC emacs-lisp :tangle yes
 
-#+END_SRC
-* PDF
-#+BEGIN_SRC emacs-lisp :tangle yes
-(after! pdf-view
-  (setq pdf-view-resize-factor 1.05))
+(after! heaven-and-hell
+  (setq heaven-and-hell-themes
+        '((light . doom-gruvbox)
+          ;; (dark . doom-tokyo-night)
+          (dark . modus-vivendi)
+          ))
+  ;; Optionall, load themes without asking for confirmation.
+  (setq heaven-and-hell-load-theme-no-confirm t)
+  (map!
+   :g "<f6>" 'heaven-and-hell-toggle-theme
+   ;; Sometimes loading default theme is broken. I couldn't figured that out yet.
+   :leader "<f6>" 'heaven-and-hell-load-default-theme))
 
-#+END_SRC
-* Ranger
-#+BEGIN_SRC emacs-lisp :tangle yes
-(after! ranger
-  (setq ranger-show-hidden 'format))
-#+END_SRC
-* Evil (Vim Keybindings)
-** Evil Ex commands
-#+BEGIN_SRC emacs-lisp :tangle yes
-(after! evil
-  (evil-ex-define-cmd "q" 'kill-this-buffer)
-  (evil-ex-define-cmd "wq" 'save-and-kill-this-buffer)
-  ;; Need to type out :quit to close emacs
-  (evil-ex-define-cmd "quit" 'kill-buffer-and-window))
-#+END_SRC
-** Window Map
-Pop up windos cycle next page etc. TODO
-
-#+BEGIN_SRC emacs-lisp :tangle yes
-(map!
- :after evil
- :map evil-window-map
- "C-h" 'which-key-show-next-page-cycle)
-#+END_SRC
-
-** Undo
-Don't need Undo with undo-redo ...
-#+BEGIN_SRC emacs-lisp :tangle yes
-;; (setq undo-fu-session-global-mode nil)
-;; g u to lowercase, let's see if this works for me.
-(map! :after evil
-      :map evil-visual-state-map
-      "u" #'evil-undo)
-(after! evil
-  (setq evil-undo-system 'undo-redo
-        evil-undo-function 'undo-only
-        evil-redo-function 'undo-redo))
+(add-hook 'after-init-hook 'heaven-and-hell-init-hook)
 
 #+END_SRC
 * Treemacs
@@ -858,40 +874,24 @@ Don't need Undo with undo-redo ...
  treemacs--width-is-locked nil
  treemacs-width-is-initially-locked nil)
 #+END_SRC
-* LSP
-Useful Keybindings are XYZ
-
+* TreeSitter
+Check how native tree-sitter works
 #+BEGIN_SRC emacs-lisp :tangle yes
-(after! lsp-ui
-  (setq lsp-ui-doc-enable t)
-  (setq lsp-ui-doc-show-with-mouse t)
-  (setq lsp-ui-doc-max-height 500)
-  (setq lsp-ui-doc-max-width 500))
+(global-tree-sitter-mode)
+(add-hook 'tree-sitter-after-on-hook #'tree-sitter-hl-mode)
+
 #+END_SRC
-* Notes
-** Config
-Whenever you reconfigure a package, make sure to wrap your config in an *after*' block, otherwise Doom's defaults may override your settings. E.g.
-#+BEGIN_QUOTE
-  (after! PACKAGE
-    (setq x y))
-#+END_QUOTE
-The exceptions to this rule:
-  - Setting file/directory variables (like *org-directory*)
-  - Setting variables which explicitly tell you to set them before their
-    package is loaded (see *C-h v VARIABLE* to look up their documentation).
-  - Setting doom variables (which start with "*doom-* " or *+*).
-
-Here are some additional functions/macros that will help you configure Doom.
-
-- *load!* for loading external *.el files relative to this one
-- *use-package!* for configuring packages
-- *after!* for running code after a package has loaded
-- *add-load-path!* for adding directories to the *load-path*, relative to
-  this file. Emacs searches the *load-path* when you load packages with
-  *require* or *use-package*.
-- *map!* for binding new keys
-
-To get information about any of these functions/macros, move the cursor over the highlighted symbol at press /K/ (non-evil users must press /C-c c k/). This will open documentation for it, including demos of how they are used. Alternatively, use /C-h o/ to look up a symbol (functions, variables, faces, etc).
-
-You can also try *gd* (or /C-c c d/) to jump to their definition and see how
-they are implemented.
+* User
+Some functionality uses this to identify you, e.g. GPG configuration, email clients, file templates and snippets. It is optional.
+#+BEGIN_SRC emacs-lisp :tangle yes
+(setq user-full-name "John Doe"
+      user-mail-address "john@doe.com")
+#+END_SRC
+* Vundo
+#+BEGIN_SRC emacs-lisp :tangle yes
+(after! vundo
+  (setq vundo-glyph-alist vundo-unicode-symbols)
+  (set-face-attribute 'vundo-saved nil   :foreground 'unspecified :inherit 'diary)
+  (set-face-attribute 'vundo-last-saved nil   :foreground 'unspecified :background nil :inherit 'error)
+  (set-face-attribute 'vundo-default nil :family "Symbola"))
+#+END_SRC emacs-lisp
