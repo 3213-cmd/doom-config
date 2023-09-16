@@ -2,23 +2,29 @@
 
 * Table of contents :toc:
 - [[#about][About]]
-- [[#rainbow-mode][Rainbow Mode]]
-- [[#emms-emacs-multimedia-system][EMMS (Emacs Multimedia System)]]
-- [[#clipboard][Clipboard]]
-- [[#calendar][Calendar]]
-- [[#prog-mode][Prog Mode]]
-- [[#user][User]]
+- [[#blamer][Blamer]]
 - [[#buffers][Buffers]]
   - [[#buffer-skip][Buffer Skip]]
+- [[#calendar][Calendar]]
+- [[#clipboard][Clipboard]]
+- [[#copilot][Copilot]]
 - [[#display][Display]]
   - [[#line-numbers][Line Numbers]]
   - [[#hl-todo][Hl-Todo]]
-- [[#blamer][Blamer]]
-- [[#vundo][Vundo]]
+- [[#emms-emacs-multimedia-system][EMMS (Emacs Multimedia System)]]
+- [[#evil-vim-keybindings][Evil (Vim Keybindings)]]
+  - [[#evil-ex-commands][Evil Ex commands]]
+  - [[#window-map][Window Map]]
+  - [[#undo][Undo]]
+- [[#file-extension][File extension]]
 - [[#font][Font]]
+- [[#lsp][LSP]]
 - [[#magit][Magit]]
   - [[#magit-todos][Magit Todos]]
   - [[#commits][Commits]]
+- [[#modeline][Modeline]]
+- [[#notes][Notes]]
+  - [[#config][Config]]
 - [[#org][Org]]
   - [[#general][General]]
   - [[#org-noter][Org Noter]]
@@ -34,38 +40,41 @@
   - [[#org-appear][Org Appear]]
   - [[#org-fancy-priorities][Org Fancy priorities]]
   - [[#org-roam-ui][Org Roam Ui]]
-- [[#projectile][Projectile]]
-- [[#modeline][Modeline]]
-- [[#file-extension][File extension]]
-- [[#copilot][Copilot]]
-- [[#treesitter][TreeSitter]]
+- [[#pdf][PDF]]
+- [[#prog-mode][Prog Mode]]
 - [[#programming][Programming]]
   - [[#lispy][Lispy]]
   - [[#dap][DAP]]
   - [[#rust][Rust]]
+- [[#projectile][Projectile]]
+- [[#rainbow-mode][Rainbow Mode]]
+- [[#ranger][Ranger]]
+- [[#sqlite][SQLite]]
+- [[#tabs-code-and-spaces][Tabs (Code) and Spaces]]
+- [[#tabs-ui][Tabs (Ui)]]
+  - [[#centaur-tabs][Centaur Tabs]]
 - [[#theme][Theme]]
   -   [[#theme-1][Theme]]
   -   [[#heaven-and-hell][Heaven and Hell]]
-- [[#sqlite][SQLite]]
-- [[#tabs-ui][Tabs (Ui)]]
-  - [[#centaur-tabs][Centaur Tabs]]
-- [[#tabs-code-and-spaces][Tabs (Code) and Spaces]]
-- [[#pdf][PDF]]
-- [[#ranger][Ranger]]
-- [[#evil-vim-keybindings][Evil (Vim Keybindings)]]
-  - [[#evil-ex-commands][Evil Ex commands]]
-  - [[#window-map][Window Map]]
-  - [[#undo][Undo]]
 - [[#treemacs][Treemacs]]
-- [[#lsp][LSP]]
-- [[#notes][Notes]]
-  - [[#config][Config]]
+- [[#treesitter][TreeSitter]]
+- [[#user][User]]
+- [[#vundo][Vundo]]
 
 * About
 This is my personal Doom Emacs config. When I tried out Emacs for the first time in 2022, I fell in love with its extensibility and efficiency. After spending alot of time tinkering with it, I realized that my config was getting hard to manage and thinking of sensible keybindings for all packages is not an easy task to handle. Doom Emacs took alot of the work from my shoulders and introduced me to many great new packages.
+I was introduced to the idea of a literate configuration by Derek Taylor from Distrotube and took some inspiration from it when creating mine.
 
 I mainly host it on GitHub to have yet another backup of it and to have a place to easily access it if I need to.
 * Blamer
+Show git-blame information next to a section of code.
+
+| Command                 | Description                                                 | Keybinding |
+|-------------------------+-------------------------------------------------------------+------------|
+| blamer-show-commit-info | Show latest commit info for code at point in a popup        | SPC c b    |
+| global-blamer-mode      | Always show latest commit info next to current line in code | SPC c B    |
+
+
 #+BEGIN_SRC emacs-lisp :tangle yes
 ;; By setting an attribute to unspecefied, I can inherit it. Otherwise only unspecified attributes will be overwritten. Could be useful in the future
 (after! blamer
