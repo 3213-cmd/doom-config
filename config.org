@@ -2,71 +2,46 @@
 
 * Table of contents :toc:
 - [[#about][About]]
-- [[#blamer][Blamer]]
-- [[#buffers][Buffers]]
-  - [[#buffer-skip][Buffer Skip]]
-- [[#calendar][Calendar]]
-- [[#clipboard][Clipboard]]
-- [[#copilot][Copilot]]
-- [[#display][Display]]
-  - [[#line-numbers][Line Numbers]]
-  - [[#hl-todo][Hl-Todo]]
-- [[#emms-emacs-multimedia-system][EMMS (Emacs Multimedia System)]]
-- [[#evil-vim-keybindings][Evil (Vim Keybindings)]]
-  - [[#evil-ex-commands][Evil Ex commands]]
-  - [[#window-map][Window Map]]
-  - [[#undo][Undo]]
-- [[#file-extension][File extension]]
-- [[#font][Font]]
-- [[#lsp][LSP]]
-- [[#magit][Magit]]
-  - [[#magit-todos][Magit Todos]]
-  - [[#commits][Commits]]
-- [[#modeline][Modeline]]
-- [[#notes][Notes]]
-  - [[#config][Config]]
-- [[#org][Org]]
-  - [[#general][General]]
-  - [[#org-noter][Org Noter]]
-  - [[#agenda][Agenda]]
-  - [[#emphasis-markers][Emphasis Markers]]
-  - [[#keywords][Keywords]]
-  - [[#deft][Deft]]
-  - [[#capture][Capture]]
-  - [[#pomodoro][Pomodoro]]
-  - [[#org-media-note][Org Media Note]]
-  - [[#org-superstar][Org Superstar]]
-  - [[#org-download][Org Download]]
-  - [[#org-appear][Org Appear]]
-  - [[#org-fancy-priorities][Org Fancy priorities]]
-  - [[#org-roam-ui][Org Roam Ui]]
-- [[#pdf][PDF]]
-- [[#prog-mode][Prog Mode]]
-- [[#programming][Programming]]
-  - [[#lispy][Lispy]]
-  - [[#dap][DAP]]
-  - [[#rust][Rust]]
-- [[#projectile][Projectile]]
-- [[#rainbow-mode][Rainbow Mode]]
-- [[#ranger][Ranger]]
-- [[#sqlite][SQLite]]
-- [[#tabs-code-and-spaces][Tabs (Code) and Spaces]]
-- [[#tabs-ui][Tabs (Ui)]]
-  - [[#centaur-tabs][Centaur Tabs]]
-- [[#theme][Theme]]
-  -   [[#theme-1][Theme]]
-  -   [[#heaven-and-hell][Heaven and Hell]]
-- [[#treemacs][Treemacs]]
-- [[#treesitter][TreeSitter]]
-- [[#user][User]]
-- [[#vundo][Vundo]]
+- [[#configuration][Configuration]]
+  - [[#blamer][Blamer]]
+  - [[#buffers][Buffers]]
+  - [[#calendar][Calendar]]
+  - [[#clipboard][Clipboard]]
+  - [[#copilot][Copilot]]
+  - [[#display][Display]]
+  - [[#emms-emacs-multimedia-system][EMMS (Emacs Multimedia System)]]
+  - [[#evil-vim-keybindings][Evil (Vim Keybindings)]]
+  - [[#file-extension][File extension]]
+  - [[#font][Font]]
+  - [[#lsp][LSP]]
+  - [[#magit][Magit]]
+  - [[#modeline][Modeline]]
+  - [[#notes][Notes]]
+  - [[#org][Org]]
+  - [[#pdf][PDF]]
+  - [[#prog-mode][Prog Mode]]
+  - [[#programming][Programming]]
+  - [[#projectile][Projectile]]
+  - [[#rainbow-mode][Rainbow Mode]]
+  - [[#ranger][Ranger]]
+  - [[#sqlite][SQLite]]
+  - [[#tabs-code-and-spaces][Tabs (Code) and Spaces]]
+  - [[#tabs-ui][Tabs (Ui)]]
+  - [[#theme][Theme]]
+  - [[#treemacs][Treemacs]]
+  - [[#treesitter][TreeSitter]]
+  - [[#user][User]]
+  - [[#vundo][Vundo]]
+- [[#end][End]]
+  - [[#personal-notes][Personal Notes]]
 
 * About
 This is my personal Doom Emacs config. When I tried out Emacs for the first time in 2022, I fell in love with its extensibility and efficiency. After spending alot of time tinkering with it, I realized that my config was getting hard to manage and thinking of sensible keybindings for all packages is not an easy task to handle. Doom Emacs took alot of the work from my shoulders and introduced me to many great new packages.
 I was introduced to the idea of a literate configuration by Derek Taylor from Distrotube and took some inspiration from it when creating mine.
 
 I mainly host it on GitHub to have yet another backup of it and to have a place to easily access it if I need to.
-* Blamer
+* Configuration
+** Blamer
 Show git-blame information next to a section of code.
 
 | Command                 | Description                                                 | Keybinding |
@@ -76,7 +51,6 @@ Show git-blame information next to a section of code.
 
 
 #+BEGIN_SRC emacs-lisp :tangle yes
-;; By setting an attribute to unspecefied, I can inherit it. Otherwise only unspecified attributes will be overwritten. Could be useful in the future
 (after! blamer
   (set-face-attribute 'blamer-face nil :foreground 'unspecified :inherit 'lsp-face-semhl-variable)
   (setq blamer-idle-time 0.3)
@@ -84,13 +58,15 @@ Show git-blame information next to a section of code.
   (setq blamer-show-avatar-p nil)
   (setq blamer-max-commit-message-length 50))
 
-
 (map! :leader
       :desc "blamer show commit info" "c b" #'blamer-show-commit-info
       :desc "toggle global blamer mode" "c B" #'global-blamer-mode)
+
 #+END_SRC
-* Buffers
-** Buffer Skip
+** Buffers
+*** Buffer Skip
+Taken from [[https://emacs.stackexchange.com/a/72778][this]] emacs stackexchange answer.
+
 #+BEGIN_SRC emacs-lisp :tangle yes
 (defcustom aj8/buffer-skip-regexp
   (rx bos (or (or "*Backtrace*" "*Compile-Log*" "*Completions*"
@@ -111,13 +87,29 @@ Show git-blame information next to a section of code.
 
 (setq switch-to-prev-buffer-skip 'aj8/buffer-skip-p)
 #+END_SRC
-* Calendar
+** Calendar
+Neat little calendar, that displays my scheduled agenda tasks.
+| Command       | Description       | Keybinding |
+|---------------+-------------------+------------|
+| open calendar | open the calendar | SPC o c    |
+
 #+BEGIN_SRC emacs-lisp :tangle yes
 (map! :leader
       :desc "open calendar" "o c" #'cfw:open-org-calendar)
+
 #+END_SRC
 
-* Clipboard
+** Clipboard
+Keybindings regarding the clipboard.
+| Command                   | Description | Keybinding |
+|---------------------------+-------------+------------|
+| cliphist-paste-item       |             |            |
+| clip-board-kill-ring-save |             |            |
+| +default/yank-pop         |             |            |
+| evil-paste-after          |             |            |
+| org-roam-buffer-toggle    |             |            |
+| yank-from-kill-ring       |             |            |
+
 #+BEGIN_SRC emacs-lisp :tangle yes
 (map! :leader
       (:prefix ("k" . "kill-clip")
@@ -128,8 +120,11 @@ Show git-blame information next to a section of code.
        :desc "Toggle roam buffer"  "r" #'org-roam-buffer-toggle))
 
 (global-set-key (kbd "M-p") #'yank-from-kill-ring)
+
 #+END_SRC
-* Copilot
+** Copilot
+Settings for [[https://github.com/zerolfx/copilot.el][copilot.el]] which enables GitHub copilot integration in Emacs. (Currently not in use)
+
 #+BEGIN_SRC emacs-lisp :tangle yes
 ;; (use-package! copilot
 ;;   ;; :hook (prog-mode . copilot-mode)
@@ -138,18 +133,17 @@ Show git-blame information next to a section of code.
 ;;               ("TAB" . 'copilot-accept-completion)
 ;;               ("C-TAB" . 'copilot-accept-completion-by-word)
 ;;               ("C-<tab>" . 'copilot-accept-completion-by-word)))
-#+END_SRC
-* Display
-** Line Numbers
-This determines the style of line numbers in effect. If set to *nil*, line numbers are disabled. For relative line numbers, set this to *relative*.
-#+BEGIN_SRC emacs-lisp :tangle yes
-;; Might try to use 'relative. Relative refers to actual line numbers, visual to those seen on screen.
-(setq display-line-numbers-type 'visual)
 
 #+END_SRC
-** Hl-Todo
-TODO ADD KILL/DELETE Keywords
-See https://peps.python.org/pep-0350/
+** Display
+*** Line Numbers
+This determines the style of line numbers in effect. If set to *nil*, line numbers are disabled. For relative line numbers, set this to *relative*. With *visual* lines on the screen are counted, i.e. a folded section will count as a single line instead of the total lines in the section.
+#+BEGIN_SRC emacs-lisp :tangle yes
+(setq display-line-numbers-type 'relative)
+
+#+END_SRC
+*** Hl-Todo
+Keywords which will be highlited when hl-todo mode is active. For inspiration regarding useful keywords see [[https://peps.python.org/pep-350][PEP-350 - Codetags]]
 #+BEGIN_SRC emacs-lisp :tangle yes
 (after! hl-todo
   (setq hl-todo-keyword-faces '(("TODO" warning bold)
@@ -170,7 +164,7 @@ See https://peps.python.org/pep-0350/
                                 ("???" warning bold)
                                 ("LEARN" warning bold))))
 #+END_SRC
-* EMMS (Emacs Multimedia System)
+** EMMS (Emacs Multimedia System)
 
 #+BEGIN_SRC emacs-lisp :tangle yes
 (map! :leader
@@ -194,8 +188,8 @@ See https://peps.python.org/pep-0350/
                (reusable-frames . visible) (window-height . 0.20)))
 
 #+END_SRC
-* Evil (Vim Keybindings)
-** Evil Ex commands
+** Evil (Vim Keybindings)
+*** Evil Ex commands
 #+BEGIN_SRC emacs-lisp :tangle yes
 (after! evil
   (evil-ex-define-cmd "q" 'kill-this-buffer)
@@ -203,7 +197,7 @@ See https://peps.python.org/pep-0350/
   ;; Need to type out :quit to close emacs
   (evil-ex-define-cmd "quit" 'kill-buffer-and-window))
 #+END_SRC
-** Window Map
+*** Window Map
 Pop up windos cycle next page etc. TODO
 
 #+BEGIN_SRC emacs-lisp :tangle yes
@@ -213,7 +207,7 @@ Pop up windos cycle next page etc. TODO
  "C-h" 'which-key-show-next-page-cycle)
 #+END_SRC
 
-** Undo
+*** Undo
 Don't need Undo with undo-redo ...
 #+BEGIN_SRC emacs-lisp :tangle yes
 ;; (setq undo-fu-session-global-mode nil)
@@ -227,14 +221,14 @@ Don't need Undo with undo-redo ...
         evil-redo-function 'undo-redo))
 
 #+END_SRC
-* File extension
+** File extension
 Example
 #+BEGIN_SRC emacs-lisp :tangle yes
 ;; Associate file extension with a mode
  (add-to-list 'auto-mode-alist '("\\.razor\\'" . web-mode))
 
 #+END_SRC
-* Font
+** Font
 Doom exposes five (optional) variables for controlling fonts in Doom:
 - *doom-font*: the primary font to use
 - *doom-variable-pitch-font*: a non-monospace font (where applicable)
@@ -258,7 +252,7 @@ See *C-h v doom-font* for documentation and more examples of what they accept.
 
 If you or Emacs can't find your font, use *M-x describe-font* to look them up; *M-x eval-region* to execute elisp code, and *M-x doom/reload-font* to refresh your font settings. If Emacs still can't find your font, it likely wasn't installed correctly. Font issues are rarely Doom issues!
 
-* LSP
+** LSP
 Useful Keybindings are XYZ
 
 #+BEGIN_SRC emacs-lisp :tangle yes
@@ -268,9 +262,9 @@ Useful Keybindings are XYZ
   (setq lsp-ui-doc-max-height 500)
   (setq lsp-ui-doc-max-width 500))
 #+END_SRC
-* Magit
+** Magit
 Uses package xyz
-** Magit Todos
+*** Magit Todos
 #+BEGIN_SRC emacs-lisp :tangle yes
 
 (after! magit-todos
@@ -296,20 +290,20 @@ Uses package xyz
 
 (add-hook! prog-mode 'magit-todos-mode)
 #+END_SRC
-** Commits
+*** Commits
 #+begin_src emacs-lisp :tangle yes
 (after! magit
   (setq magit-log-section-commit-count 30))
 #+end_src
-* Modeline
+** Modeline
 #+BEGIN_SRC emacs-lisp :tangle yes
 (setq doom-modeline-persp-name t )
         (after! persp-mode
           (setq persp-emacsclient-init-frame-behaviour-override "main"))
 
 #+END_SRC
-* Notes
-** Config
+** Notes
+*** Config
 Whenever you reconfigure a package, make sure to wrap your config in an *after*' block, otherwise Doom's defaults may override your settings. E.g.
 #+BEGIN_QUOTE
   (after! PACKAGE
@@ -335,8 +329,8 @@ To get information about any of these functions/macros, move the cursor over the
 
 You can also try *gd* (or /C-c c d/) to jump to their definition and see how
 they are implemented.
-* Org
-** General
+** Org
+*** General
 #+BEGIN_SRC emacs-lisp :tangle yes
 
 ;; If you use `org' and don't want your org files in the default location below,
@@ -380,7 +374,7 @@ they are implemented.
         org-default-priority 68))
 
 #+END_SRC
-** Org Noter
+*** Org Noter
 #+BEGIN_SRC emacs-lisp :tangle yes
 (map!
  :after org-noter
@@ -389,8 +383,8 @@ they are implemented.
  "C-M-i" 'org-noter-insert-note)
 
 #+END_SRC
-** Agenda
-*** Super Agenda
+*** Agenda
+**** Super Agenda
 #+BEGIN_SRC emacs-lisp :tangle yes
 (after! org-super-agenda
   (setq org-super-agenda-header-properties '(face +org-todo-active org-agenda-structural-header t)
@@ -399,7 +393,7 @@ they are implemented.
 ;; TODO Learn ORG-QL, remove org-superagenda in the future (posibly)
 (add-hook 'org-agenda-mode-hook 'org-super-agenda-mode)
 #+END_SRC
-*** Settings
+**** Settings
 #+BEGIN_SRC emacs-lisp :tangle yes
 ;;(setq org-agenda-files "~/org-roam/")
 ;;(setq org-agenda-skip-function-global
@@ -420,7 +414,7 @@ they are implemented.
   ;; Might need to Adjust in the future
 
 #+END_SRC
-*** View Commands
+**** View Commands
 #+BEGIN_SRC emacs-lisp :tangle yes
 (setq org-agenda-custom-commands
       ;; Create Somdeay view
@@ -472,8 +466,8 @@ they are implemented.
         ("p" "projects" ((todo "PROJ" ((org-agenda-overriding-header "My Projetcs:")))))))
 
 #+END_SRC
-** Emphasis Markers
-** Todo Keywords
+*** Emphasis Markers
+*** Todo Keywords
 #+BEGIN_SRC emacs-lisp :tangle yes
 (setq org-todo-keywords '((sequence
                             "PROJ(p)" "TODO(t)" "LOOP(r)"
@@ -493,7 +487,7 @@ they are implemented.
                              ("NEXT" . (:foreground  "RoyalBlue" :weight bold :underline t))
                              ("MAIL" . (:foreground  "RoyalBlue" :weight bold :underline t))))
 #+END_SRC
-** Deft
+*** Deft
 #+BEGIN_SRC emacs-lisp :tangle yes
 (after! deft
   (setq deft-directory "~/org-roam/"
@@ -517,8 +511,8 @@ they are implemented.
                   "\\)")))
 
 #+END_SRC
-** Capture
-*** Org
+*** Capture
+**** Org
 #+BEGIN_SRC emacs-lisp :tangle yes
 (setq org-capture-templates '(("t" "Todo [inbox]" entry
                                  (file+headline "~/org-roam/gtd/inbox.org" "Tasks")
@@ -532,7 +526,7 @@ they are implemented.
                              ("~/org-roam/gtd/scheduled.org" :maxlevel . 2)))
 
 #+END_SRC
-*** Org Roam
+**** Org Roam
 #+BEGIN_SRC emacs-lisp :tangle yes
 (setq org-roam-capture-templates
       '(("a" "agenda" plain "%?"
@@ -595,7 +589,7 @@ they are implemented.
                             "#+title: ${title}\n#+category: aws\n") :unnarrowed t)))
 
 #+END_SRC
-*** Dailies
+**** Dailies
 #+BEGIN_SRC emacs-lisp :tangle yes
 (after! org-roam-dailies
   (setq org-roam-dailies-capture-templates
@@ -612,7 +606,7 @@ they are implemented.
 ;;           :target (file+datetree "journal.org.gpg" week)))))
 
 #+END_SRC
-** Pomodoro
+*** Pomodoro
 #+BEGIN_SRC emacs-lisp :tangle yes
 (defun my/org-pomodoro-restart ()
   (interactive)
@@ -632,7 +626,7 @@ they are implemented.
    org-pomodoro-start-sound "~/.config/doom/sounds/pomodoro1.wav"))
 
 #+END_SRC
-** Org Media Note
+*** Org Media Note
 #+BEGIN_SRC emacs-lisp :tangle yes
 (use-package! org-media-note
   :hook (org-mode .  org-media-note-mode)
@@ -644,17 +638,17 @@ they are implemented.
 (map! :leader
       :desc "open org-media-note" "e v" #'org-media-note-hydra/body)
 #+END_SRC
-** Org Superstar
+*** Org Superstar
 #+BEGIN_SRC emacs-lisp :tangle yes
 (after! org-superstar
   (set-face-attribute 'org-superstar-header-bullet nil :font "DejaVu Sans Mono"))
 #+END_SRC
-** Org Download
+*** Org Download
 #+BEGIN_SRC emacs-lisp :tangle yes
 (after! org-download
   (setq org-download-screenshot-method "flameshot gui --raw > %s" ))
 #+END_SRC
-** Org Appear
+*** Org Appear
 #+BEGIN_SRC emacs-lisp :tangle yes
 (add-hook 'org-mode-hook  'org-appear-mode)
 (setq org-appear-autolinks t
@@ -664,7 +658,7 @@ they are implemented.
       org-appear-delay 0.7)
 
 #+END_SRC
-** Org Fancy priorities
+*** Org Fancy priorities
 #+BEGIN_SRC emacs-lisp :tangle yes
 (after! org-fancy-priorities
  (setq
@@ -678,7 +672,7 @@ they are implemented.
   org-agenda-block-separator 8411))
 
 #+END_SRC
-** Org Roam Ui
+*** Org Roam Ui
 #+BEGIN_SRC emacs-lisp :tangle yes
 (use-package! websocket
   :after org-roam)
@@ -696,15 +690,15 @@ they are implemented.
           org-roam-ui-open-on-start t))
 
 #+END_SRC
-* PDF
+** PDF
 #+BEGIN_SRC emacs-lisp :tangle yes
 (after! pdf-view
   (setq pdf-view-resize-factor 1.05))
 
 #+END_SRC
-* Prog Mode
-* Programming
-** Lispy
+** Prog Mode
+** Programming
+*** Lispy
 #+BEGIN_SRC emacs-lisp :tangle yes
 (map! :after lispy
       :map lispy-mode-map
@@ -723,7 +717,7 @@ they are implemented.
  ;; Alt-GR d us.int keyboard layout
                 )
 #+END_SRC
-** DAP
+*** DAP
 #+BEGIN_SRC emacs-lisp :tangle yes
 (after! dap-mode
   (setq dap-python-debugger 'debugpy))
@@ -760,29 +754,29 @@ they are implemented.
       :desc "dap breakpoint log message" "l" #'dap-breakpoint-log-message)
 
 #+END_SRC
-** Rust
+*** Rust
 #+BEGIN_SRC emacs-lisp :tangle yes
 ;; Not sure if needed
 (evil-set-initial-state 'rustic-popup-mode 'emacs)
 
 #+END_SRC
-* Projectile
+** Projectile
 #+BEGIN_SRC emacs-lisp :tangle yes
 ;; (setq projectile-ignored-projects '("/home/user/"))
 #+END_SRC
-* Rainbow Mode
+** Rainbow Mode
 
 #+BEGIN_SRC emacs-lisp :tangle yes
 (add-hook! org-mode 'rainbow-mode)
 (add-hook! prog-mode 'rainbow-mode)
 
 #+END_SRC
-* Ranger
+** Ranger
 #+BEGIN_SRC emacs-lisp :tangle yes
 (after! ranger
   (setq ranger-show-hidden 'format))
 #+END_SRC
-* SQLite
+** SQLite
 
 #+BEGIN_SRC emacs-lisp :tangle yes
 (map!
@@ -794,7 +788,7 @@ they are implemented.
  "c" #'sqlite-mode-list-columns
  "D" #'sqlite-mode-delete)
 #+END_SRC
-* Tabs (Code) and Spaces
+** Tabs (Code) and Spaces
 #+BEGIN_SRC emacs-lisp :tangle yes
 ;; (setq-default indent-tabs-mode nil)
 (setq backward-delete-char-untabify-method nil)
@@ -802,8 +796,8 @@ they are implemented.
 (setq-default tab-stop-list (list 4 8 12))
 
 #+END_SRC
-* Tabs (Ui)
-** Centaur Tabs
+** Tabs (Ui)
+*** Centaur Tabs
 - Keybindings
 #+BEGIN_SRC emacs-lisp :tangle yes
 (map! :leader
@@ -850,13 +844,13 @@ they are implemented.
   (centaur-tabs-change-fonts "Terminus" 50)
   (centaur-tabs-group-by-projectile-project))
 #+END_SRC
-* Theme
+** Theme
 There are two ways to load a theme. Both assume the theme is installed and available. You can either set *doom-theme* or manually load a theme with the *load-theme*  function.
-**   Theme
+***   Theme
 #+BEGIN_SRC emacs-lisp :tangle yes
 (setq doom-theme 'modus-vivendi)
 #+END_SRC
-**   Heaven and Hell
+***   Heaven and Hell
 #+BEGIN_SRC emacs-lisp :tangle yes
 
 (after! heaven-and-hell
@@ -875,7 +869,7 @@ There are two ways to load a theme. Both assume the theme is installed and avail
 (add-hook 'after-init-hook 'heaven-and-hell-init-hook)
 
 #+END_SRC
-* Treemacs
+** Treemacs
 #+BEGIN_SRC emacs-lisp :tangle yes
 (add-hook 'treemacs-mode-hook (lambda () (text-scale-decrease 1)))
 (setq doom-themes-treemacs-enable-variable-pitch nil
@@ -883,20 +877,20 @@ There are two ways to load a theme. Both assume the theme is installed and avail
  treemacs--width-is-locked nil
  treemacs-width-is-initially-locked nil)
 #+END_SRC
-* TreeSitter
+** TreeSitter
 Check how native tree-sitter works
 #+BEGIN_SRC emacs-lisp :tangle yes
 (global-tree-sitter-mode)
 (add-hook 'tree-sitter-after-on-hook #'tree-sitter-hl-mode)
 
 #+END_SRC
-* User
+** User
 Some functionality uses this to identify you, e.g. GPG configuration, email clients, file templates and snippets. It is optional.
 #+BEGIN_SRC emacs-lisp :tangle yes
 (setq user-full-name "John Doe"
       user-mail-address "john@doe.com")
 #+END_SRC
-* Vundo
+** Vundo
 #+BEGIN_SRC emacs-lisp :tangle yes
 (after! vundo
   (setq vundo-glyph-alist vundo-unicode-symbols)
@@ -904,3 +898,9 @@ Some functionality uses this to identify you, e.g. GPG configuration, email clie
   (set-face-attribute 'vundo-last-saved nil   :foreground 'unspecified :background nil :inherit 'error)
   (set-face-attribute 'vundo-default nil :family "Symbola"))
 #+END_SRC emacs-lisp
+* End
+** Personal Notes
+- Setting a face attribute to unspecefied allows the attribute to be inherited. Otherwise only already unspecified attributes will be overwritten.
+ #+begin_src emacs-lisp
+(set-face-attribute 'blamer-face nil :foreground 'unspecified :inherit 'lsp-face-semhl-variable)
+ #+end_src
