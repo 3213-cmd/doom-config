@@ -62,6 +62,9 @@
   - [[#config][Config]]
 
 * About
+This is my personal Doom Emacs config. When I tried out Emacs for the first time in 2022, I fell in love with its extensibility and efficiency. After spending alot of time tinkering with it, I realized that my config was getting hard to manage and thinking of sensible keybindings for all packages is not an easy task to handle. Doom Emacs took alot of the work from my shoulders and introduced me to many great new packages.
+
+I mainly host it on GitHub to have yet another backup of it and to have a place to easily access it if I need to.
 * Rainbow Mode
 
 #+BEGIN_SRC emacs-lisp :tangle yes
